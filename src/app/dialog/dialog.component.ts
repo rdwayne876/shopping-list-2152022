@@ -10,6 +10,8 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'
 })
 export class DialogComponent implements OnInit {
 
+  // categories = getCategories();
+  categories: any[] =  [];
   itemForm !: FormGroup;
   actionBtn : string = "Save";
 
@@ -19,8 +21,12 @@ export class DialogComponent implements OnInit {
     private dialogref : MatDialogRef<DialogComponent>) { }
 
   ngOnInit(): void {
+
+    this.getCategories();
+
     this.itemForm = this.formBuilder.group({
       itemName : ['', Validators.required],
+      itemCategory : ['', Validators.required],
       itemQuantity : ['', Validators.required],
       itemPrice : ['', Validators.required],
       itemNotes : ['']
@@ -38,7 +44,7 @@ export class DialogComponent implements OnInit {
   }
 
   addProduct(){
-    // console.log(this.itemForm.value);
+    console.log(this.itemForm.value);
     if(!this.editData){
       if(this.itemForm.valid){
         this.api.postItem(this.itemForm.value)
@@ -68,6 +74,22 @@ export class DialogComponent implements OnInit {
       }, 
       error: ()=>{
         alert("Oops, something went wrong!");
+      }
+    })
+  }
+
+  getCategories(){
+    const results = [];
+    this.api.getItem()
+    .subscribe({
+      next:(res)=>{
+        //push item categories into array
+        res.forEach((item: any) => {
+          this.categories.push(item.itemCategory)
+        });
+        //Filter array elements to remove duplicates and empty strings
+        this.categories = [...new Set(this.categories)].filter((category: any) => category !== '');
+        console.log(this.categories);
       }
     })
   }

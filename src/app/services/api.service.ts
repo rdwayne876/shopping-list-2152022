@@ -7,20 +7,21 @@ import { Injectable } from '@angular/core';
 export class ApiService {
 
   constructor(private http : HttpClient) { }
+  itemsUrl = 'http://localhost:3000/itemList/';
 
   postItem(data : any){
-    return this.http.post<any>("http://localhost:3000/itemList/",data)
+    return this.http.post<any>(this.itemsUrl, data)
   }
 
   getItem(){
-    return this.http.get<any>("http://localhost:3000/itemList/");
+    return this.http.get<any>(this.itemsUrl);
   }
 
   putItem(data:any, id: number){
-    return this.http.put<any>("http://localhost:3000/itemList/"+id, data)
+    return this.http.put<any>(this.itemsUrl+id, data)
   }
 
   deleteItem(id: number){
-    return this.http.delete<any>("http://localhost:3000/itemList/"+id)
+    return this.http.delete<any>(this.itemsUrl+id)
   }
 }

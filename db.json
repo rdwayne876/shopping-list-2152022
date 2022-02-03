@@ -4,12 +4,14 @@
       "itemName": "Bread",
       "itemQuantity": 12,
       "itemPrice": 1200,
+      "itemCategory": "Essentials",
       "itemNotes": "I really need some bread\n",
       "id": 1
     },
     {
       "itemName": "Beer",
-      "itemQuantity": 5,
+      "itemCategory": "",
+      "itemQuantity": 4,
       "itemPrice": 1200,
       "itemNotes": "This is more important than food",
       "id": 2
@@ -18,6 +20,7 @@
       "itemName": "Rat Poison",
       "itemQuantity": 1,
       "itemPrice": 200,
+      "itemCategory": "Essentials",
       "itemNotes": "Rat dem a gwaan bad now",
       "id": 4
     },
@@ -25,6 +28,7 @@
       "itemName": "Lube",
       "itemQuantity": 1,
       "itemPrice": 1500,
+      "itemCategory": "Essentials",
       "itemNotes": "She a bawl too much from wah day",
       "id": 5
     },
@@ -32,6 +36,7 @@
       "itemName": "Cheese",
       "itemQuantity": 3,
       "itemPrice": 1200,
+      "itemCategory": "Essentials",
       "itemNotes": "cyaa eat so so bread",
       "id": 6
     },
@@ -39,6 +44,7 @@
       "itemName": "Water",
       "itemQuantity": 3,
       "itemPrice": 700,
+      "itemCategory": "Essentials",
       "itemNotes": "pipe water a fuckry",
       "id": 7
     },
@@ -46,8 +52,25 @@
       "itemName": "Shampoo",
       "itemQuantity": 1,
       "itemPrice": 3000,
+      "itemCategory": "Personals",
       "itemNotes": "Locks wah wash",
       "id": 8
+    },
+    {
+      "itemName": "1",
+      "itemQuantity": 1,
+      "itemPrice": 1,
+      "itemCategory": "Personals",
+      "itemNotes": "1",
+      "id": 9
+    },
+    {
+      "itemName": "Egg",
+      "itemCategory": "Fuckry",
+      "itemQuantity": 12,
+      "itemPrice": 600,
+      "itemNotes": "egg a shit",
+      "id": 10
     }
   ],
   "comments": [
