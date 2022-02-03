@@ -1,0 +1,63 @@
+{
+  "itemList": [
+    {
+      "itemName": "Bread",
+      "itemQuantity": 12,
+      "itemPrice": 1200,
+      "itemNotes": "I really need some bread\n",
+      "id": 1
+    },
+    {
+      "itemName": "Beer",
+      "itemQuantity": 5,
+      "itemPrice": 1200,
+      "itemNotes": "This is more important than food",
+      "id": 2
+    },
+    {
+      "itemName": "Rat Poison",
+      "itemQuantity": 1,
+      "itemPrice": 200,
+      "itemNotes": "Rat dem a gwaan bad now",
+      "id": 4
+    },
+    {
+      "itemName": "Lube",
+      "itemQuantity": 1,
+      "itemPrice": 1500,
+      "itemNotes": "She a bawl too much from wah day",
+      "id": 5
+    },
+    {
+      "itemName": "Cheese",
+      "itemQuantity": 3,
+      "itemPrice": 1200,
+      "itemNotes": "cyaa eat so so bread",
+      "id": 6
+    },
+    {
+      "itemName": "Water",
+      "itemQuantity": 3,
+      "itemPrice": 700,
+      "itemNotes": "pipe water a fuckry",
+      "id": 7
+    },
+    {
+      "itemName": "Shampoo",
+      "itemQuantity": 1,
+      "itemPrice": 3000,
+      "itemNotes": "Locks wah wash",
+      "id": 8
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
