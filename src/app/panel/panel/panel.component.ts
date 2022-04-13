@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { DialogComponent } from './dialog/dialog.component';
-import { ApiService } from './services/api.service';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { DialogComponent } from 'src/app/dialog/dialog.component';
+import { ApiService } from 'src/app/services/api.service';
 
 export interface shoppingItems{
   itemName: string;
@@ -16,9 +16,9 @@ export interface shoppingItems{
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-panel',
+  templateUrl: './panel.component.html',
+  styleUrls: ['./panel.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed, void', style({ height: '0px', minHeight: '0', display: 'none' })),
@@ -28,12 +28,13 @@ export interface shoppingItems{
     ]),
   ],
 })
-export class AppComponent implements OnInit{
-  title = 'Awesome Shopping List';
+
+export class PanelComponent implements OnInit {
 
   displayedColumns: string[] = ['Name', 'Quantity', 'Price'];
   dataSource!: MatTableDataSource<any>;
   expandedItem: shoppingItems | null | undefined;
+  data: any ={};
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,6 +42,10 @@ export class AppComponent implements OnInit{
   constructor(private dialog: MatDialog, private api : ApiService) {}
   
   ngOnInit(): void {
+    this.getAllItems();
+    console.log(this.dataSource);
+    
+    // console.log(MatTableDataSource)
   }
 
   openDialog(){
@@ -58,11 +63,11 @@ export class AppComponent implements OnInit{
     this.api.getItem()
     .subscribe({
       next:(res) =>{
-        // console.log(res);
+        console.log(res);
+        this.data = res;
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        console.log(this.dataSource);
       },
       error: (err) =>{
         alert("Oops, something went wrong...")
@@ -70,5 +75,36 @@ export class AppComponent implements OnInit{
     })
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
   
+  editItem(row : any){
+    this.dialog.open(DialogComponent,{
+      width: '90%',
+      data: row
+    }).afterClosed().subscribe(val=>{
+      if(val === 'update'){
+        this.getAllItems()
+      }
+    });
+  }
+
+  deleteItem(id: number){
+    this.api.deleteItem(id)
+    .subscribe({
+      next:(res)=>{
+        alert("Item deleted successfully");
+        this.getAllItems();
+      },
+      error: ()=>{
+        alert("Oops, something went wrong...");
+      }
+    });
+  }
 }

@@ -3,20 +3,20 @@
     <form [formGroup]="itemForm">
         <mat-form-field appearance="outline">
             <mat-label>Item Name</mat-label>
-            <input matInput placeholder="Enter item name" formControlName="itemName">
+            <input matInput placeholder="Enter item name" formControlName="Name">
             <mat-icon matSuffix>border_color</mat-icon>
             <mat-hint>Eg. Bread, Condoms, etc</mat-hint>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
             <mat-label>Item Quantity</mat-label>
-            <input matInput placeholder="Enter item quantity" type="number" formControlName="itemQuantity">
+            <input matInput placeholder="Enter item quantity" type="number" formControlName="Quantity">
             <mat-icon matSuffix>border_color</mat-icon>
             <mat-hint>1 Bread, 2 Breads, 100 Breads</mat-hint>
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Price</mat-label>
-            <input matInput type="number" class="example-right-align" placeholder="0" formControlName="itemPrice">
+            <input matInput type="number" class="example-right-align" placeholder="0" formControlName="Price">
             <span matPrefix>$&nbsp;</span>
             <span matSuffix>.00</span>
         </mat-form-field>
@@ -28,7 +28,7 @@
                     placeholder="Choose a category"
                     aria-label="Category"
                     matInput
-                    formControlName="itemCategory"
+                    formControlName="Category"
                     [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let category of categories" [value]="category">
@@ -39,7 +39,7 @@
 
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Notes</mat-label>
-            <textarea matInput placeholder="Ex. I really need this..." formControlName="itemNotes"></textarea>
+            <textarea matInput placeholder="Ex. I really need this..." formControlName="Notes"></textarea>
         </mat-form-field>
     </form>
 </div>

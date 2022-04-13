@@ -1,15 +1,9 @@
 .example-spacer {
-    flex: 1 1 auto;
-  }
-  table {
-    width: 100%;
-  }
-  
-  .mat-form-field {
-    font-size: 14px;
-    width: 100%;
-  }
-  .container{
-    max-width: 80vw;
-    margin: 0 auto;
-  }
+  flex: 1 1 auto;
+}
+
+.container {
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
