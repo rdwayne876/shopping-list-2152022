@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { DialogComponent } from './dialog/dialog.component';
-import { ApiService } from './services/api.service';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Item } from './models/item';
+import { ItemService } from './services/item.service';
 
 export interface shoppingItems{
   itemName: string;
@@ -31,41 +32,77 @@ export interface shoppingItems{
 export class AppComponent implements OnInit{
   title = 'Awesome Shopping List';
 
-  displayedColumns: string[] = ['Name', 'Quantity', 'Price'];
+  displayedColumns: string[] = ['Name', 'Quantity', 'Price', 'Category', 'Notes', 'Actions'];
   dataSource!: MatTableDataSource<any>;
-  expandedItem: shoppingItems | null | undefined;
+  data: any = {};
+  items!: Item[]
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dialog: MatDialog, private api : ApiService) {}
+  constructor( private dialog: MatDialog, 
+              private itemService : ItemService) {}
   
   ngOnInit(): void {
+    this.getAllItems()
+
   }
 
-  openDialog(){
+  openDialog() {
     this.dialog.open(DialogComponent, {
       width: '90%'
-    }).afterClosed().subscribe(val=>{
-      if(val === 'save'){
+    }).afterClosed().subscribe(val => {
+      if (val === 'save') {
         this.getAllItems();
       }
     })
-    ;
+      ;
   }
 
-  getAllItems(){
-    this.api.getItem()
-    .subscribe({
-      next:(res) =>{
-        // console.log(res);
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+  getAllItems(): void {
+    this.itemService.index().subscribe({
+      next: (resp: any) => {
+        console.log(resp);
+
+        this.items = resp.data
+        console.log(this.items);
+
+        this.dataSource = new MatTableDataSource(resp.data.items)
         console.log(this.dataSource);
-      },
-      error: (err) =>{
-        alert("Oops, something went wrong...")
+        this.dataSource.paginator = this.paginator
+        this.dataSource.sort = this.sort
+      }
+    })
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  editItem(row: any) {
+    this.dialog.open(DialogComponent, {
+      width: '90%',
+      data: row
+    }).afterClosed().subscribe(val => {
+      if (val === 'update') {
+        this.getAllItems()
+      }
+    });
+  }
+
+  deleteItem(id: string) {
+    this.itemService.delete( id).subscribe({
+      next: ( resp) => {
+        if( resp) {
+          this.getAllItems()
+        }
+      }, error: ( err) => {
+        console.error( err);
       }
     })
   }

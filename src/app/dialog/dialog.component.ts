@@ -1,7 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { CategoryService } from '../services/category.service';
+import { ItemService } from '../services/item.service';
+import { Category } from '../models/category';
 import { ApiService } from '../services/api.service';
-import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'
 
 @Component({
   selector: 'app-dialog',
@@ -10,108 +13,112 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog'
 })
 export class DialogComponent implements OnInit {
 
-  // categories = getCategories();
   itemList: any[] = [];
-  categories: any[] =  [];
+  categories: any[] = [];
   itemForm !: FormGroup;
-  actionBtn : string = "Save";
+  actionBtn: string = "Save";
   completed: boolean = false;
 
-  constructor( private formBuilder : FormBuilder, 
-    private api : ApiService,
-    @Inject(MAT_DIALOG_DATA) public editData : any,
-    private dialogref : MatDialogRef<DialogComponent>) { }
+  constructor(private formBuilder: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public editData: any,
+    private dialogref: MatDialogRef<DialogComponent>,
+    private api: ApiService,
+    private itemService: ItemService,
+    private categoryService: CategoryService) { }
 
   ngOnInit(): void {
 
     this.getCategories();
 
     this.itemForm = this.formBuilder.group({
-      Name : ['', Validators.required],
-      Category : ['', Validators.required],
-      Quantity : ['', Validators.required],
-      Price : ['', Validators.required],
-      Notes : ['']
+      name: ['', Validators.required],
+      category: ['', Validators.required],
+      quantity: ['', Validators.required],
+      price: ['', Validators.required],
+      notes: ['']
     })
     // console.log(this.editData);
 
-    if(this.editData){
+    if (this.editData) {
       console.log(this.editData);
-      
+
       this.actionBtn = "Update";
-      this.itemForm.controls['Name'].setValue(this.editData.Name);
-      this.itemForm.controls['Quantity'].setValue(this.editData.Quantity);
-      this.itemForm.controls['Price'].setValue(this.editData.Price);
-      this.itemForm.controls['Notes'].setValue(this.editData.Notes);
+      this.itemForm.controls['name'].setValue(this.editData.name);
+      this.itemForm.controls['quantity'].setValue(this.editData.quantity);
+      this.itemForm.controls['price'].setValue(this.editData.price);
+      this.itemForm.controls['notes'].setValue(this.editData.notes);
     }
 
   }
 
-  addProduct(){
+  addProduct() {
     console.log(this.itemForm.value);
-    if(!this.editData){
-      if(this.itemForm.valid){
-        this.api.postItem(this.itemForm.value)
-        .subscribe({
-          next:(res)=>{
-            alert("Item added successfully!");
-            this.itemForm.reset();
-            this.dialogref.close('save');
+    if (!this.editData) {
+      if (this.itemForm.valid) {
+        this.itemService.create(this.itemForm.value).subscribe({
+          next: (res) => {
+            if (res) {
+              alert("Item added successfully!");
+              this.itemForm.reset();
+              this.dialogref.close('save');
+            }
           },
-          error: ()=>{
-            alert("Oops, something went wrong!")
+          error: (err) => {
+            alert(err)
           }
         })
       }
-    } else{
+    } else {
       this.updateItem()
-    }  
+    }
   }
 
-  updateItem(){
-    this.api.putItem(this.itemForm.value, this.editData.id)
-    .subscribe({
-      next:(res)=>{
-        alert("Item Updated successfully");
-        this.itemForm.reset;
-        this.dialogref.close('update');
-      }, 
-      error: ()=>{
-        alert("Oops, something went wrong!");
+  updateItem() {
+    this.itemService.update(this.editData._id, this.itemForm.value).subscribe({
+      next: (res) => {
+        if (res) {
+          alert("Item Updated successfully");
+          this.itemForm.reset;
+          this.dialogref.close('update');
+        }
+      },
+      error: (err) => {
+        alert(err);
       }
     })
   }
 
-  
 
-  getItemList(){
+
+  getItemList() {
     this.api.getItem()
-    .subscribe({
-      next:(res)=>{
-        this.itemList = res;
-        console.log(this.itemList);
-      }, complete:() =>{
-        this.completed = true;
-      }
-    })
+      .subscribe({
+        next: (res) => {
+          this.itemList = res;
+          console.log(this.itemList);
+        }, complete: () => {
+          this.completed = true;
+        }
+      })
   }
 
-  getCategories(){
+  getCategories() {
 
-    
-    console.log(this.categories);
-    this.api.getItem()
-    .subscribe({
-      next:(res)=>{
-        //push item categories into array
-        res.forEach((item: any) => {
-          this.categories.push(item.Category)
-        });
-        //Filter array elements to remove duplicates and empty strings
-        this.categories = [...new Set(this.categories)].filter((category: any) => category !== '');
+    this.categoryService.index().subscribe({
+      next: (res: any) => {
+        console.log(res);
+
+        res.data.categorys.forEach((category: Category) => {
+          this.categories.push({
+            name: category.name,
+            id: category._id
+          })
+        })
+
         console.log(this.categories);
       }
     })
+
   }
-  
+
 }

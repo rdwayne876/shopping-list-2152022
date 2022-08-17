@@ -1,0 +1,78 @@
+<mat-accordion class="example-headers-align">
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          New List
+        </mat-panel-title>
+        <mat-panel-description>
+          <span></span>
+          <button mat-raised-button color="accent" (click)="openDialog()">Add Item</button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div style="margin-top: 5px;">
+        <mat-form-field appearance="standard">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+        </mat-form-field>
+
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" matSort>
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="{{column}}"> {{column}} </th>
+            <td mat-cell *matCellDef="let item"> {{item[column]}} </td>
+          </ng-container>
+
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let item" [attr.colspan]="displayedColumns.length">
+              <div class="example-element-detail" [@detailExpand]="item == expandedItem ? 'expanded' : 'collapsed'">
+                <div class="actions">
+                  <div class="actions-row">
+                    <button mat-icon-button color="accent" (click)="editItem(item)"  aria-label="Edit">
+                      <mat-icon> edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteItem(item.id)"  aria-label="Delete">
+                      <mat-icon> delete</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary"  aria-label="Mark Purchased">
+                      <mat-icon> check</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="details">
+                  <div>{{item.category.name}}</div>
+                  <!-- <div> Qty: {{item.Quantity}}</div>
+                  <div>Price: {{item.Price | currency}}</div> -->
+                  
+                </div>
+                <div class="description">
+                  {{item.notes}}
+                </div>
+                <div class="total">Total: {{item.quantity * item.price | currency}}</div>
+                <!-- <div class="example-element-diagram">
+                  <div class="example-element-name"> {{item.Name}} </div>
+                  <div class="example-element-weight"> {{item.Category}} </div>
+                </div>
+                <div class="example-element-description">
+                  {{item.Notes}}
+                </div> -->
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let item; columns: displayedColumns;" class="example-element-row"
+            [class.example-expanded-row]="expandedItem === item"
+            (click)="expandedItem = expandedItem === item ? null : item">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+      </div>
+
+
+    </mat-expansion-panel>
+  </mat-accordion>

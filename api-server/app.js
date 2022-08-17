@@ -1,12 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const cors = require( 'cors')
 const categoryRouter = require( './routes/category')
 const itemRouter = require( './routes/item')
 
 // 1) MIDDLEWARES
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cors())
 
 //Morgan
 app.use((req, res, next) =>{

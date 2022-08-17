@@ -5,15 +5,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DialogComponent } from 'src/app/dialog/dialog.component';
+import { Item } from 'src/app/models/item';
 import { ApiService } from 'src/app/services/api.service';
+import { ItemService } from 'src/app/services/item.service';
 
-export interface shoppingItems{
-  itemName: string;
-  itemQuantity: number;
-  itemPrice: number;
-  itemCategory: string;
-  itemNotes: string
-}
 
 @Component({
   selector: 'app-panel',
@@ -31,46 +26,46 @@ export interface shoppingItems{
 
 export class PanelComponent implements OnInit {
 
-  displayedColumns: string[] = ['Name', 'Quantity', 'Price'];
+  displayedColumns: string[] = ['Name', 'Quantity', 'Price', 'Category', 'Notes', 'Actions'];
   dataSource!: MatTableDataSource<any>;
-  expandedItem: shoppingItems | null | undefined;
-  data: any ={};
+  data: any = {};
+  items!: Item[]
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dialog: MatDialog, private api : ApiService) {}
-  
+  constructor(private dialog: MatDialog, private api: ApiService, private itemService: ItemService) { }
+
   ngOnInit(): void {
     this.getAllItems();
     console.log(this.dataSource);
-    
+
     // console.log(MatTableDataSource)
   }
 
-  openDialog(){
+  openDialog() {
     this.dialog.open(DialogComponent, {
       width: '90%'
-    }).afterClosed().subscribe(val=>{
-      if(val === 'save'){
+    }).afterClosed().subscribe(val => {
+      if (val === 'save') {
         this.getAllItems();
       }
     })
-    ;
+      ;
   }
 
-  getAllItems(){
-    this.api.getItem()
-    .subscribe({
-      next:(res) =>{
-        console.log(res);
-        this.data = res;
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      },
-      error: (err) =>{
-        alert("Oops, something went wrong...")
+  getAllItems(): void {
+    this.itemService.index().subscribe({
+      next: (resp: any) => {
+        console.log(resp);
+
+        this.items = resp.data
+        console.log(this.items);
+
+        this.dataSource = new MatTableDataSource(resp.data.items)
+        console.log(this.dataSource);
+        this.dataSource.paginator = this.paginator
+        this.dataSource.sort = this.sort
       }
     })
   }
@@ -83,28 +78,27 @@ export class PanelComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
-  
-  editItem(row : any){
-    this.dialog.open(DialogComponent,{
+
+  editItem(row: any) {
+    this.dialog.open(DialogComponent, {
       width: '90%',
       data: row
-    }).afterClosed().subscribe(val=>{
-      if(val === 'update'){
+    }).afterClosed().subscribe(val => {
+      if (val === 'update') {
         this.getAllItems()
       }
     });
   }
 
-  deleteItem(id: number){
-    this.api.deleteItem(id)
-    .subscribe({
-      next:(res)=>{
-        alert("Item deleted successfully");
-        this.getAllItems();
-      },
-      error: ()=>{
-        alert("Oops, something went wrong...");
+  deleteItem(id: string) {
+    this.itemService.delete( id).subscribe({
+      next: ( resp) => {
+        if( resp) {
+          this.getAllItems()
+        }
+      }, error: ( err) => {
+        console.error( err);
       }
-    });
+    })
   }
 }

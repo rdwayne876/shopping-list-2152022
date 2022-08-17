@@ -29,7 +29,7 @@ export class CategoryService {
   }
 
   /**
-   * Add an category record
+   * Add a category record
    * @param body posted form data
    * @returns created shopping list category
    */
@@ -38,7 +38,7 @@ export class CategoryService {
   }
 
   /**
-   * Find an category record
+   * Find a category record
    * @param id uses id to find category in db
    * @returns return the category found in db
    */
@@ -57,7 +57,7 @@ export class CategoryService {
   }
 
   /**
-   * Delete an category record
+   * Delete a category record
    * @param id uses category id to locate category to be deleted
    * @returns returns category that was deleted
    */
