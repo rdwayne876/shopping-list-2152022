@@ -18,6 +18,7 @@ export class DialogComponent implements OnInit {
   itemForm !: FormGroup;
   actionBtn: string = "Save";
   completed: boolean = false;
+  title: string = "Add Item"
 
   constructor(private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public editData: any,
@@ -40,6 +41,7 @@ export class DialogComponent implements OnInit {
     // console.log(this.editData);
 
     if (this.editData) {
+      this.title = "Edit Item"
       console.log(this.editData);
 
       this.actionBtn = "Update";
